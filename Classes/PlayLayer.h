@@ -12,7 +12,7 @@ class PlayLayer : public Layer
 public:
 	PlayLayer();
 	~PlayLayer();
-	//static Scene* createScene();
+	static Scene* createScene();
 	void menuCloseCallback(Ref* pSender);
 	CREATE_FUNC(PlayLayer);
 

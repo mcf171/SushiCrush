@@ -32,7 +32,6 @@ PlayLayer::~PlayLayer()
 	}
 }
 
-/*
 Scene *PlayLayer::createScene()
 {
 	auto scene = Scene::create();
@@ -40,7 +39,6 @@ Scene *PlayLayer::createScene()
 	scene->addChild(layer);
 	return scene;
 }
-*/
 
 bool PlayLayer::init()
 {
@@ -51,9 +49,9 @@ bool PlayLayer::init()
 	// background
 	Size winSize = Director::getInstance()->getWinSize();
 	auto background = Sprite::create("background.png");
-	background->setAnchorPoint(Point(0, 1));
-	background->setPosition(Point(0, winSize.height));
-	playlayer->addChild(background, -1);
+	background->setAnchorPoint(Vec2(0, 1));
+	background->setPosition(Vec2(0, winSize.height));
+	this->addChild(background, -1);
 
 	// init spriteSheet
 	srand(time(NULL));
@@ -73,8 +71,8 @@ bool PlayLayer::init()
 
 	// init menu
 	auto closeItem = MenuItemImage::create(
-	                                       "CloseNormal.png",
-	                                       "CloseSelected.png",
+	                                       "close.png",
+	                                       "close.png",
 	                                       CC_CALLBACK_1(PlayLayer::menuCloseCallback, this));
 
 	closeItem->setPosition(Vec2(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
@@ -735,14 +733,6 @@ Point PlayLayer::positionOfItem(int row, int col)
 
 void PlayLayer::menuCloseCallback(Ref* pSender)
 {
-	#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
-		MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
-		return;
-	#endif
-
-    Director::getInstance()->end();
-
-	#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    	exit(0);
-	#endif
+	auto scene = Start::create();
+	Director::sharedDirector()->replaceScene(scene);
 }

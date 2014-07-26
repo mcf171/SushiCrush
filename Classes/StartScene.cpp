@@ -1,5 +1,6 @@
 #include "StartScene.h"
 #include "PlayLayer.h"
+#include "StartLayer.h"
 
 Start::Start()
 {
@@ -11,8 +12,8 @@ Start::~Start()
 
 bool Start::init()
 {
-	auto playlayer = PlayLayer::create();
-	this->addChild(playlayer);
+	auto startlayer = StartLayer::create();
+	this->addChild(startlayer);
 
 	return true;
 }

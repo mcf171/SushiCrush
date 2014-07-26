@@ -10,8 +10,10 @@ class Start : public Scene
 public:
 	Start();
 	~Start();
+	CREATE_FUNC(Start);
 
 	virtual bool init() override;
+	
 };
 
 #endif
