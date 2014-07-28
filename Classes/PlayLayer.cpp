@@ -564,7 +564,7 @@ void PlayLayer::explodeSushi(SushiSprite *sushi)
 
 void PlayLayer::checkAndRemoveChain()
 {
-	SushiSprite *sushi;
+	SushiSprite *sushi, *LastNormalSushi;
 	// 1. reset ingnore flag and m_isNeedRemove
 	for (int i = 0; i < m_height * m_width; i++) {
 		sushi = m_matrix[i];
@@ -603,15 +603,19 @@ void PlayLayer::checkAndRemoveChain()
 
 		std::list<SushiSprite *>::iterator itList;
 		bool isSetedIgnoreCheck = false;
+		LastNormalSushi = NULL;
 		for (itList = longerList.begin(); itList != longerList.end(); itList++) {
 			sushi = (SushiSprite *)*itList;
 			if (!sushi) {
 				continue;
 			}
 
+			if (sushi->getDisplayMode() == DISPLAY_MODE_NORMAL)
+				LastNormalSushi = sushi;
+
 			if (longerList.size() > 4) {
 				// 5消产生特殊寿司
-				if (sushi == m_srcSushi || sushi == m_destSushi) {
+				if ((sushi == m_srcSushi || sushi == m_destSushi) && sushi->getDisplayMode() == DISPLAY_MODE_NORMAL) {
 					isSetedIgnoreCheck = true;
 					sushi->setIgnoreCheck(true);
 					sushi->setIsNeedRemove(false);
@@ -622,7 +626,7 @@ void PlayLayer::checkAndRemoveChain()
 
 			if (longerList.size() == 4) {
 				// 4消产生特殊寿司
-				if (sushi == m_srcSushi || sushi == m_destSushi) {
+				if ((sushi == m_srcSushi || sushi == m_destSushi) && sushi->getDisplayMode() == DISPLAY_MODE_NORMAL){
 					isSetedIgnoreCheck = true;
 					sushi->setIgnoreCheck(true);
 					sushi->setIsNeedRemove(false);
@@ -635,14 +639,14 @@ void PlayLayer::checkAndRemoveChain()
 			markRemove(sushi);
 		}
 
-		// 取最后一个变化的为自由掉落产生的特殊寿司
-		if (!isSetedIgnoreCheck && longerList.size() > 3) {
-			sushi->setIgnoreCheck(true);
-			sushi->setIsNeedRemove(false);
+		// 若以上未选出特殊寿司，取最后一个普通寿司为特殊寿司
+		if (!isSetedIgnoreCheck && longerList.size() > 3 && LastNormalSushi) {
+			LastNormalSushi->setIgnoreCheck(true);
+			LastNormalSushi->setIsNeedRemove(false);
 			if (longerList.size() == 4)
-				sushi->setDisplayMode(m_movingVertical ? DISPLAY_MODE_VERTICAL : DISPLAY_MODE_HORIZONTAL);
+				LastNormalSushi->setDisplayMode(m_movingVertical ? DISPLAY_MODE_VERTICAL : DISPLAY_MODE_HORIZONTAL);
 			else
-				sushi->setDisplayMode(DISPLAY_MODE_FIVECRUSH);
+				LastNormalSushi->setDisplayMode(DISPLAY_MODE_FIVECRUSH);
 		}
 	}
 
@@ -734,5 +738,5 @@ Point PlayLayer::positionOfItem(int row, int col)
 void PlayLayer::menuCloseCallback(Ref* pSender)
 {
 	auto scene = Start::create();
-	Director::sharedDirector()->replaceScene(scene);
+	Director::sharedDirector()->pushScene(scene);
 }

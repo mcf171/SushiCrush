@@ -64,13 +64,14 @@ bool StartLayer::init()
 
 void StartLayer::newgameCallback(Ref* pSender)
 {
+	Director::sharedDirector()->popToRootScene();
 	auto scene = PlayLayer::createScene();
 	Director::sharedDirector()->replaceScene(scene);
 };
 
 void StartLayer::continueCallback(Ref* pSender)
 {
-
+	Director::sharedDirector()->popScene();
 };
 
 void StartLayer::settingsCallback(Ref* pSender)
